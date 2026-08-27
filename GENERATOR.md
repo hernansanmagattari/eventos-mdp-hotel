@@ -114,11 +114,18 @@ Verificá que el archivo quede como HTML válido y que el `EVENTOS` sea JavaScri
 
 ## 3. Commit + push
 
+El entorno puede iniciar en `HEAD` desprendido (detached HEAD). Antes de commitear,
+asegurate de estar en la rama `main`:
+
 ```
+git checkout main 2>/dev/null || git switch -c main
 git add index.html
 git commit -m "Actualización semanal del tablero de eventos — AAAA-MM-DD"
 git push origin main
 ```
+
+Si el commit quedó en detached HEAD igual, recuperalo con
+`git checkout main && git merge --ff-only <hash>` y después `git push origin main`.
 
 Mensaje de commit siempre con la fecha ISO del día. No abrir PR: commit directo a `main`.
 
