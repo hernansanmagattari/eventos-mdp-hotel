@@ -17,6 +17,11 @@ commit + push a `main`.
 - **Ventana a cubrir:** desde la fecha de ejecución hasta ~6 meses hacia adelante.
 - **Categorías válidas:** `Congreso`, `Recital / Show`, `Torneo / Evento Deportivo`,
   `Reunión / Corporativo`, `Feria`.
+  - Las **fiestas populares, festivales y eventos culturales/gastronómicos** van en
+    `Feria` (ej. CAFEST / Festival de la Cerveza Artesanal, Fiesta Regional del Calamar,
+    festival Yeca, fiestas de colectividades, ferias de editores/gastronómicas, Festival
+    Internacional de Cine, Bienal de Arte Joven). Si es un **festival musical** con line-up
+    de bandas, usá `Recital / Show`.
 - **Zonas (cercanía al hotel):** `Playa Grande` > `Zona Sur` > `Centro` > `Otras`.
 - **Sedes clave a monitorear siempre:** Hotel Costa Galana, Club Náutico Mar del Plata,
   Espacio Bendu / Bendu Arena, Arena MDQ / Arena Mar del Plata.
@@ -38,6 +43,11 @@ Hacé, como mínimo, búsquedas para cada uno de estos ejes y quedate solo con l
 7. `International Maxi Games Mar del Plata` (si sigue vigente en la ventana)
 8. `Estadio José María Minella fútbol de verano <año>` (estado de obras / concesión)
 9. `Festival Internacional de Cine de Mar del Plata <año> fechas`
+10. `Mar del Plata fiestas populares festivales <año>` (CAFEST / cerveza artesanal,
+    Fiesta Regional del Calamar, festival Yeca, fiestas de colectividades)
+11. `Mar del Plata eventos culturales gastronómicos <mes> <año>` (ferias gastronómicas,
+    ferias de editores/libros, muestras y bienales de arte, festivales de teatro/música)
+12. `Mar del Plata agenda cultural municipal <año>` (programación oficial de la ciudad)
 
 Agendas oficiales a consultar:
 
@@ -114,7 +124,24 @@ Mensaje de commit siempre con la fecha ISO del día. No abrir PR: commit directo
 
 ---
 
-## 4. Si algo falla
+## 4. Enviar el resumen por correo
+
+Después del push, mandá un correo con el resumen de cambios usando el conector de Gmail
+(buscá la herramienta con ToolSearch: `gmail send`).
+
+- **Para:** `hernan@hotelclubdelgolf.com.ar`, `mariela@hotelclubdelgolf.com.ar`
+- **Asunto:** `Tablero de eventos MDP — actualización semanal (DD/MM/AAAA)`
+- **Cuerpo:** el mismo resumen que devolvés al final (qué cambió respecto de la versión
+  previa, cantidad de eventos, alertas relevantes) + esta línea:
+  `Ver el tablero: https://raw.githack.com/hernansanmagattari/eventos-mdp-hotel/main/index.html`
+- Texto plano, en español, tono ejecutivo y breve.
+
+Si el conector de Gmail no está disponible en la corrida, no es un error fatal: dejá
+constancia en el mensaje final de que no se pudo enviar el correo y seguí.
+
+---
+
+## 5. Si algo falla
 
 - Sin conexión / búsquedas vacías: **no** borres los eventos existentes. Actualizá solo
   las fechas de encabezado y dejá una línea en el commit aclarando que no hubo cambios de
