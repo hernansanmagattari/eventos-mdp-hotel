@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero de Inteligencia de Eventos · Mar del Plata · Hotel Club del Golf</title>
+<style>
+  :root{
+    --navy:#12294a;
+    --navy-deep:#0a1729;
+    --navy-soft:#1f3c66;
+    --gold:#b08d57;
+    --bg:#eef1f5;
+    --card:#ffffff;
+    --ink:#1f2937;
+    --muted:#667085;
+    --line:#e2e6ec;
+
+    --cat-congreso:#1f4e79;
+    --cat-recital:#7b2d4e;
+    --cat-torneo:#2f6b4f;
+    --cat-reunion:#5a4b81;
+    --cat-feria:#a86a2c;
+
+    --est-conf:#2f6b4f;
+    --est-curso:#1f4e79;
+    --est-tent:#a8730f;
+    --est-seg:#5b6472;
+    --est-duda:#a23b3b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--navy-soft)}
+
+  header.top{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;padding:34px 22px 26px;border-bottom:3px solid var(--gold)}
+  .wrap{max-width:1200px;margin:0 auto}
+  .brand{font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  header.top h1{font-size:1.7rem;font-weight:600;margin:6px 0 4px}
+  header.top p.sub{color:#c4cede;font-size:.94rem;max-width:820px}
+  .meta-line{margin-top:15px;font-size:.79rem;color:#9fb0c6;display:flex;flex-wrap:wrap;gap:6px 20px}
+  .meta-line b{color:#dbe4f0;font-weight:600}
+
+  .disclaimer{max-width:1200px;margin:16px auto 0;padding:0 22px}
+  .disclaimer .box{background:#fdf6e9;border:1px solid #ecd9b3;border-left:4px solid var(--gold);border-radius:10px;padding:12px 15px;font-size:.83rem;color:#5b4a2c}
+  .disclaimer b{color:#3d3116}
+
+  .kpis{max-width:1200px;margin:18px auto 0;padding:0 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;box-shadow:0 6px 18px rgba(12,25,48,.07)}
+  .kpi .n{font-size:1.65rem;font-weight:700;color:var(--navy)}
+  .kpi .l{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+
+  /* ==== Callout torneo de verano ==== */
+  .callout{max-width:1200px;margin:22px auto 0;padding:0 22px}
+  .callout .inner{background:#fbeaea;border:1px solid #e6bcbc;border-left:5px solid var(--est-duda);border-radius:12px;padding:15px 18px}
+  .callout h3{font-size:.95rem;color:#7c2b2b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+  .callout p{font-size:.87rem;color:#5f3535}
+  .callout a{color:#7c2b2b}
+
+  /* ==== Monitoreo de sedes ==== */
+  .sedes{max-width:1200px;margin:22px auto 0;padding:0 22px}
+  .sedes h2,.section-h{font-size:1.05rem;color:var(--navy);font-weight:700;margin-bottom:12px;letter-spacing:.01em}
+  .sede-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .sede-card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:10px;padding:13px 14px}
+  .sede-card .nm{font-weight:700;color:var(--navy);font-size:.92rem}
+  .sede-card .zn{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:2px 0 7px}
+  .sede-card .st{font-size:.82rem;color:var(--ink)}
+  .sede-card .lk{display:inline-block;margin-top:8px;font-size:.75rem}
+
+  /* ==== Controles ==== */
+  .panel{max-width:1200px;margin:24px auto 0;padding:0 22px}
+  .controls{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;display:flex;flex-wrap:wrap;gap:15px 26px}
+  .cgroup{display:flex;flex-direction:column;gap:7px}
+  .cgroup h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{border:1px solid var(--line);background:#f7f9fc;border-radius:999px;padding:5px 12px;font-size:.79rem;cursor:pointer;transition:.15s;user-select:none}
+  .chip:hover{border-color:var(--navy-soft)}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .chip.gold.active{background:var(--gold);border-color:var(--gold);color:#20180c}
+
+  .legend{max-width:1200px;margin:13px auto 0;padding:0 22px;display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.76rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  main{max-width:1200px;margin:0 auto;padding:8px 22px 60px}
+  .zona{margin-top:32px}
+  .zona-head{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--navy);padding-bottom:7px;margin-bottom:16px}
+  .zona-head h2{font-size:1.12rem;color:var(--navy);font-weight:700}
+  .zona-head .desc{font-size:.8rem;color:var(--muted)}
+  .zona-head .count{margin-left:auto;font-size:.76rem;color:var(--muted)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--navy-soft);border-radius:12px;padding:15px 16px 14px;display:flex;flex-direction:column;gap:9px;box-shadow:0 2px 9px rgba(12,25,48,.05);transition:.15s}
+  .card:hover{box-shadow:0 10px 24px rgba(12,25,48,.12);transform:translateY(-2px)}
+  .card[data-cat="Congreso"]{border-left-color:var(--cat-congreso)}
+  .card[data-cat="Recital / Show"]{border-left-color:var(--cat-recital)}
+  .card[data-cat="Torneo / Evento Deportivo"]{border-left-color:var(--cat-torneo)}
+  .card[data-cat="Reunión / Corporativo"]{border-left-color:var(--cat-reunion)}
+  .card[data-cat="Feria"]{border-left-color:var(--cat-feria)}
+  .card.sede-clave{border:1px solid var(--gold);border-left:5px solid var(--gold);background:linear-gradient(180deg,#fffdf8,#fff)}
+  .card.pinned{box-shadow:0 0 0 2px var(--navy) inset, 0 4px 14px rgba(12,25,48,.12)}
+
+  .card-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .cat{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:6px;color:#fff}
+  .cat.c-congreso{background:var(--cat-congreso)}
+  .cat.c-recital{background:var(--cat-recital)}
+  .cat.c-torneo{background:var(--cat-torneo)}
+  .cat.c-reunion{background:var(--cat-reunion)}
+  .cat.c-feria{background:var(--cat-feria)}
+
+  .badge{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:6px;border:1px solid}
+  .imp-muyalta{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .imp-alta{background:#dfe8f4;color:var(--navy);border-color:#bcccE3}
+  .imp-media{background:#eef1f5;color:#4b5563;border-color:#dbe0e8}
+  .imp-baja{background:#f4f5f7;color:#8a919c;border-color:#e6e8ec}
+
+  .est{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:6px;color:#fff;display:inline-flex;align-items:center;gap:4px}
+  .est::before{content:"";width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.9)}
+  .est-conf{background:var(--est-conf)}
+  .est-curso{background:var(--est-curso)}
+  .est-tent{background:var(--est-tent)}
+  .est-seg{background:var(--est-seg)}
+  .est-duda{background:var(--est-duda)}
+
+  .sede-tag{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:6px;background:var(--gold);color:#20180c;display:inline-flex;gap:4px;align-items:center}
+  .prox-pill{margin-left:auto;font-size:.67rem;color:var(--muted);background:#f0f2f6;border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+
+  .card h3{font-size:1rem;color:var(--ink);font-weight:650;line-height:1.3}
+  .artista{font-size:.83rem;color:var(--navy-soft);font-weight:600;margin-top:-4px}
+  .rows{display:flex;flex-direction:column;gap:4px;font-size:.82rem}
+  .row{display:flex;gap:8px}
+  .row .k{color:var(--muted);min-width:74px;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;padding-top:1px}
+  .row .v{color:var(--ink);flex:1}
+
+  .src{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;text-decoration:none;color:var(--navy-soft);word-break:break-all}
+  .src:hover{text-decoration:underline}
+  .src .ico{flex:0 0 auto}
+
+  .notes{margin-top:2px;background:#f7f9fc;border:1px dashed #cfd8e6;border-radius:8px;padding:8px 11px;font-size:.81rem;color:#374151}
+  .notes b{color:var(--navy);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+
+  .empty{display:none;padding:36px;text-align:center;color:var(--muted);font-style:italic}
+
+  /* ==== Barra de actualización / verificación ==== */
+  .updbar{max-width:1200px;margin:18px auto 0;padding:0 22px}
+  .updbar .inner{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+  .updbar .today{font-size:.81rem;color:var(--muted)}
+  .updbar .today b{color:var(--navy)}
+  .updbar .spacer{flex:1 1 40px}
+  .btn{border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:8px;padding:8px 13px;font-size:.81rem;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{background:var(--navy-deep)}
+  .btn.ghost{background:#fff;color:var(--navy)}
+  .btn.ghost:hover{background:#f2f5f9}
+  .upd-panel{max-width:1200px;margin:9px auto 0;padding:0 22px;display:none}
+  .upd-panel.open{display:block}
+  .upd-panel .inner{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .upd-panel h4{font-size:.73rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:9px}
+  .upd-links{display:flex;flex-wrap:wrap;gap:7px}
+  .upd-links a{font-size:.79rem;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--navy-soft)}
+  .upd-links a:hover{border-color:var(--navy-soft)}
+  .upd-note{font-size:.76rem;color:var(--muted);margin-top:11px;line-height:1.45}
+
+  .stale-bar{max-width:1200px;margin:11px auto 0;padding:0 22px}
+  .stale-bar .inner{border-radius:10px;padding:9px 14px;font-size:.82rem;display:flex;gap:8px;align-items:center}
+  .stale-bar .inner.warn{background:#fdf3e7;border:1px solid #ecd2ad;color:#7a5a24;cursor:pointer}
+  .stale-bar .inner.none{background:#eef6ef;border:1px solid #c9e2cd;color:#356b3e}
+
+  .verif{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:2px;padding-top:8px;border-top:1px dashed #dbe1ea}
+  .verif .vlabel{font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+  .verif .vdate{font-size:.82rem;font-weight:700;color:var(--ink)}
+  .age{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:2px 6px;border-radius:6px;border:1px solid}
+  .age-fresh{background:#eaf5ec;color:#2f6b4f;border-color:#bfe0c6}
+  .age-mid{background:#fbf1e0;color:#8a6314;border-color:#e6d2ab}
+  .age-old{background:#fbe9e9;color:#a23b3b;border-color:#e6bcbc}
+  .verif .grow{flex:1 1 8px}
+  .mini{font-size:.73rem;font-weight:600;border-radius:7px;padding:5px 9px;cursor:pointer;text-decoration:none;border:1px solid var(--line);background:#f7f9fc;color:var(--navy-soft);white-space:nowrap}
+  .mini:hover{border-color:var(--navy-soft)}
+  .mini.done{background:var(--est-conf);border-color:var(--est-conf);color:#fff}
+
+  footer{background:var(--navy-deep);color:#9fb0c6;padding:26px 22px;font-size:.79rem;border-top:3px solid var(--gold)}
+  footer .wrap{display:flex;flex-direction:column;gap:8px}
+  footer b{color:#dbe4f0}
+  footer ul{margin:2px 0 0 18px}
+  footer a{color:#b9c9df}
+
+  @media (max-width:960px){.sede-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}header.top h1{font-size:1.35rem}}
+  @media (max-width:520px){.grid{grid-template-columns:1fr}.sede-grid{grid-template-columns:1fr}.row .k{min-width:66px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Hotel Club del Golf · Playa Grande · Mar del Plata</div>
+    <h1>Tablero de Inteligencia de Eventos — Plaza Mar del Plata</h1>
+    <p class="sub">Compilación, verificación y jerarquización de eventos de los próximos meses para decisiones de tarifas, paquetes y ocupación. Cada tarjeta incluye artista/entidad protagonista, sede exacta, estado y enlace fuente para auditoría del equipo de Reservas.</p>
+    <div class="meta-line">
+      <span>Datos compilados: <b>27/08/2026</b></span>
+      <span>Ventana: <b>Sep 2026 – Mar 2027</b></span>
+      <span>Frecuencia: <b>Revisión y reauditoría semanal</b></span>
+      <span>Responsable: <b>Inteligencia Comercial / Reservations Manager</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="disclaimer">
+  <div class="box">
+    <b>Nota de auditoría.</b> Los datos provienen de fuentes públicas (prensa local, sitios de sedes, ticketeras y agendas institucionales) relevadas el 27/08/2026. Las fechas marcadas como <b>tentativas</b>, <b>en seguimiento</b> o <b>en duda</b> deben confirmarse contra el enlace fuente de cada tarjeta antes de fijar tarifas o cupos. Los eventos anuales recurrentes (Semana del Yachting, Abierto de Golf) figuran con la ventana estimada según su edición previa.
+  </div>
+</div>
+
+<div class="updbar">
+  <div class="inner">
+    <span class="today">Fecha de consulta: <b id="today-str">—</b> · datos base compilados el <b>27/08/2026</b> · última marca manual: <b id="last-mark">—</b></span>
+    <span class="spacer"></span>
+    <button class="btn" id="btn-upd">🔄 Actualizar búsqueda a hoy</button>
+    <button class="btn ghost" id="btn-all">✓ Marcar todo verificado hoy</button>
+    <button class="btn ghost" id="btn-reset">↺ Reiniciar</button>
+  </div>
+</div>
+<div class="upd-panel" id="upd-panel">
+  <div class="inner">
+    <h4>Búsquedas de novedades ajustadas al <span id="panel-date">día de hoy</span> — se abren en pestañas nuevas</h4>
+    <div class="upd-links" id="upd-links"></div>
+    <p class="upd-note">Este tablero es un archivo local: el botón <b>no reescribe los datos solo</b>. Abre las agendas oficiales y las búsquedas de prensa (filtradas a los últimos 45 días) para que revises manualmente; luego, en cada tarjeta, tocá <b>«✓ Verificado hoy»</b> para registrar la fecha de control. Las marcas se guardan en este navegador (localStorage).</p>
+  </div>
+</div>
+
+<section class="kpis">
+  <div class="kpi"><div class="n" id="k-total">0</div><div class="l">Eventos en seguimiento</div></div>
+  <div class="kpi"><div class="n" id="k-conf">0</div><div class="l">Confirmados</div></div>
+  <div class="kpi"><div class="n" id="k-alto">0</div><div class="l">Impacto Alto / Muy Alto</div></div>
+  <div class="kpi"><div class="n" id="k-sede">0</div><div class="l">En sedes clave monitoreadas</div></div>
+</section>
+
+<div class="stale-bar" id="stale-bar"><div class="inner none" id="stale-inner">—</div></div>
+
+<div class="callout">
+  <div class="inner">
+    <h3>Estado del tradicional Fútbol de Verano (Estadio José María Minella)</h3>
+    <p>
+      <b>NO se disputará en la temporada 2026–27.</b> El estadio fue concesionado a Minella Stadium S.A. (30 años) y está en obras por una inversión cercana a US$3 millones, con finalización estimada para el último trimestre de 2026; el objetivo declarado es el regreso del fútbol de verano recién en <b>2027</b>.
+      <br><b>Implicancia comercial:</b> se libera una franja de demanda de enero que históricamente presionaba la plaza al alza. Recalibrar a la baja la proyección de ocupación y ADR para enero 2027, salvo compensación de Bendu Arena, Arena Mar del Plata y el arrastre de los Maxi Games.
+      Fuente: <a href="https://www.iprofesional.com/negocios/437699-el-estadio-emblema-de-mar-del-plata-en-manos-brasilenas-volveria-el-futbol-del-verano" target="_blank" rel="noopener">iprofesional.com</a> ·
+      <a href="https://www.lanueva.com/nota/2026-4-15-17-21-0-el-estadio-mundialista-de-mar-del-plata-esta-quedando-a-nuevo-para-que-en-2027-vuelva-el-futbol-de-verano" target="_blank" rel="noopener">lanueva.com</a>
+    </p>
+  </div>
+</div>
+
+<section class="sedes">
+  <h2>Monitoreo de sedes clave</h2>
+  <div class="sede-grid">
+    <div class="sede-card">
+      <div class="nm">Hotel Costa Galana</div>
+      <div class="zn">Playa Grande · contiguo al hotel</div>
+      <div class="st">Activo. Sede del Congreso Catastral del Bicentenario (31/8–2/9) y eje de la temporada alta de congresos oct–dic. 6 salones (uno hasta 1.800 pax). <b>Competidor y generador directo de overflow.</b></div>
+      <a class="lk src" href="https://www.mardelplatabureau.com.ar/calendario-acceso" target="_blank" rel="noopener">mardelplatabureau.com.ar ↗</a>
+    </div>
+    <div class="sede-card">
+      <div class="nm">Club Náutico Mar del Plata</div>
+      <div class="zn">Playa Grande · contiguo al hotel</div>
+      <div class="st">Activo. Copa CNMP / Campeonato Interclubes de vela en curso; Semana Internacional del Yachting en verano; subsede de vela de los Maxi Games.</div>
+      <a class="lk src" href="https://cnmp.org.ar/" target="_blank" rel="noopener">cnmp.org.ar ↗</a>
+    </div>
+    <div class="sede-card">
+      <div class="nm">Espacio Bendu (Bendu Arena)</div>
+      <div class="zn">Zona Sur · Puerto (ex Manzana de los Circos)</div>
+      <div class="st">Activo. Multiespacio de ~7.000–8.000 pax que debutó con Dante Spinetta. Grilla de shows de verano 2026–27 <b>en confirmación</b>: monitorear Ticketek semanalmente.</div>
+      <a class="lk src" href="https://www.lacapitalmdp.com/ya-se-conocieron-los-recitales-del-verano-en-bendu-arena/" target="_blank" rel="noopener">lacapitalmdp.com ↗</a>
+    </div>
+    <div class="sede-card">
+      <div class="nm">Arena MDQ (Arena Mar del Plata)</div>
+      <div class="zn">Centro · Av. Luro y San Juan</div>
+      <div class="st">Inauguración prevista 24/10/2026 (Los Fabulosos Cadillacs, agotado). Microestadio de 6.000 m². <b>Habilitación municipal e impacto barrial bajo observación</b> según prensa local: confirmar antes de comprometer bloques.</div>
+      <a class="lk src" href="https://elretratodehoy.com.ar/2026/08/03/arena-mar-del-plata-promocionan-recital-para-octubre-pero-dudan-sobre-la-habilitacion-y-el-impacto-en-el-barrio/" target="_blank" rel="noopener">elretratodehoy.com.ar ↗</a>
+    </div>
+  </div>
+</section>
+
+<div class="panel">
+  <div class="controls">
+    <div class="cgroup">
+      <h4>Categoría</h4>
+      <div class="chips" id="f-cat">
+        <span class="chip active" data-f="all">Todas</span>
+        <span class="chip" data-f="Congreso">Congreso</span>
+        <span class="chip" data-f="Recital / Show">Recital / Show</span>
+        <span class="chip" data-f="Torneo / Evento Deportivo">Torneo / Deportivo</span>
+        <span class="chip" data-f="Reunión / Corporativo">Reunión / Corporativo</span>
+        <span class="chip" data-f="Feria">Feria</span>
+      </div>
+    </div>
+    <div class="cgroup">
+      <h4>Zona</h4>
+      <div class="chips" id="f-zona">
+        <span class="chip active" data-f="all">Todas</span>
+        <span class="chip" data-f="Playa Grande">Playa Grande</span>
+        <span class="chip" data-f="Zona Sur">Zona Sur</span>
+        <span class="chip" data-f="Centro">Centro</span>
+        <span class="chip" data-f="Otras">Otras</span>
+      </div>
+    </div>
+    <div class="cgroup">
+      <h4>Estado</h4>
+      <div class="chips" id="f-estado">
+        <span class="chip active" data-f="all">Todos</span>
+        <span class="chip" data-f="Confirmado">Confirmado</span>
+        <span class="chip" data-f="En curso">En curso</span>
+        <span class="chip" data-f="Fecha tentativa">Tentativa</span>
+        <span class="chip" data-f="En seguimiento">En seguimiento</span>
+        <span class="chip" data-f="En duda">En duda</span>
+      </div>
+    </div>
+    <div class="cgroup">
+      <h4>Filtro rápido</h4>
+      <div class="chips" id="f-flag">
+        <span class="chip gold" data-f="sede">Solo sedes clave</span>
+        <span class="chip" data-f="alto">Solo impacto Alto+</span>
+        <span class="chip" data-f="stale">Desactualizados (+21 d)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <span><i class="dot" style="background:var(--cat-congreso)"></i>Congreso</span>
+  <span><i class="dot" style="background:var(--cat-recital)"></i>Recital / Show</span>
+  <span><i class="dot" style="background:var(--cat-torneo)"></i>Torneo / Deportivo</span>
+  <span><i class="dot" style="background:var(--cat-reunion)"></i>Reunión / Corporativo</span>
+  <span><i class="dot" style="background:var(--cat-feria)"></i>Feria</span>
+  <span><i class="dot" style="background:var(--gold)"></i>Sede clave (Costa Galana · Náutico · Bendu · Arena MDQ)</span>
+</div>
+
+<main id="board"></main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Metodología de jerarquización.</b> 1) Cercanía al Hotel Club del Golf: Playa Grande (contiguo) &gt; Zona Sur &gt; Centro &gt; Otras. 2) Envergadura: convocatoria histórica y presión estimada sobre la plaza hotelera (Muy Alta &gt; Alta &gt; Media &gt; Baja). Dentro de cada zona se ordena de mayor a menor impacto. Los eventos marcados con borde azul están fijados como prioridad máxima.</p>
+    <p><b>Agendas oficiales para reauditoría semanal:</b></p>
+    <ul>
+      <li>EMTUR / Municipio — <a href="https://turismomardelplata.gob.ar/ASP/SP/eventos-amarlaweb.asp" target="_blank" rel="noopener">turismomardelplata.gob.ar</a></li>
+      <li>Mar del Plata Convention &amp; Visitors Bureau — <a href="https://www.mardelplatabureau.com.ar/calendario-acceso" target="_blank" rel="noopener">mardelplatabureau.com.ar</a></li>
+      <li>Cartelera de recitales — <a href="https://www.mardelplataturismo.com.ar/recitales.html" target="_blank" rel="noopener">mardelplataturismo.com.ar/recitales</a></li>
+      <li>Club Náutico Mar del Plata — <a href="https://cnmp.org.ar/" target="_blank" rel="noopener">cnmp.org.ar</a></li>
+      <li>Asociación Argentina de Golf — <a href="https://www.aag.org.ar/" target="_blank" rel="noopener">aag.org.ar</a></li>
+      <li>International Maxi Games 2026 — <a href="https://www.internationalmaxigames.com/" target="_blank" rel="noopener">internationalmaxigames.com</a></li>
+    </ul>
+    <p><b>Naturaleza de los datos.</b> Tablero de apoyo a la decisión. No sustituye la confirmación directa con organizadores y sedes. Ante discrepancia entre este tablero y la fuente enlazada, prevalece la fuente.</p>
+    <p><b>Control de vigencia.</b> Cada tarjeta muestra su fecha de <b>última verificación</b> (base: 27/08/2026). El botón «🔄 Actualizar búsqueda a hoy» abre las agendas oficiales y las búsquedas de prensa acotadas a los últimos 45 días; tras revisar, usá «✓ Verificado hoy» en cada tarjeta para dejar registro. Las marcas se guardan solo en este navegador. Una tarjeta sin verificar por más de 21 días queda señalada en la barra de alerta.</p>
+  </div>
+</footer>
+
+<script>
+const EVENTOS = [
+  /* ================= CONGRESO ================= */
+  {
+    cat:"Congreso",
+    nombre:"Congreso Catastral del Bicentenario",
+    artista:"Consejo Federal del Catastro + Colegio de Agrimensores de la Prov. de Buenos Aires",
+    sede:"Hotel Costa Galana", sedeKey:"costa-galana",
+    fecha:"31 ago – 2 sep 2026", estado:"Confirmado",
+    url:"https://congresosada.com/informacion_general/", urlLabel:"congresosada.com",
+    impacto:"Alta", zona:"Playa Grande",
+    notas:"Sede a metros del hotel, con récord de inscripciones. Captar overflow cuando Costa Galana complete cupo. Tarifa corporativa con factura A, check-in temprano y sala para reuniones. Solicitar figurar como hotel alternativo oficial ante la secretaría del congreso."
+  },
+  {
+    cat:"Congreso",
+    nombre:"XII Encuentro Nacional de Cuidados Paliativos (AAMyCP)",
+    artista:"Asociación Argentina de Medicina y Cuidados Paliativos",
+    sede:"Mar del Plata — sede a confirmar", sedeKey:null,
+    fecha:"2 – 4 oct 2026", estado:"Confirmado",
+    url:"https://aamycp.com.ar/mar-del-plata-2026/", urlLabel:"aamycp.com.ar",
+    impacto:"Media", zona:"Centro",
+    notas:"Público profesional de todo el país, reservas individuales. Confirmar sede exacta para dimensionar la oportunidad. Tarifa profesional con desayuno; oferta de traslados a la sede."
+  },
+  {
+    cat:"Congreso",
+    nombre:"XXV Congreso Argentino de Diabetes (SAD)",
+    artista:"Sociedad Argentina de Diabetes — lema «Decisiones clínicas en tiempos de cambio»",
+    sede:"Mar del Plata — sede a confirmar", sedeKey:null,
+    fecha:"29 – 31 oct 2026", estado:"Confirmado",
+    url:"https://lugoneseditorial.com.ar/editorial/congresos-medicos-argentina-2026/", urlLabel:"lugoneseditorial.com.ar",
+    impacto:"Alta", zona:"Centro",
+    notas:"Congreso médico grande en plena temporada alta de congresos. Buen potencial de ADR sin canje. Verificar sede (Costa Galana / Sheraton / Provincial) y bloquear inventario 60 días antes con factura A."
+  },
+  {
+    cat:"Congreso",
+    nombre:"Congreso Argentino de Psiquiatría y Salud Mental (APSA)",
+    artista:"Asociación de Psiquiatras Argentinos",
+    sede:"Sheraton Mar del Plata (zona Alem)", sedeKey:null,
+    fecha:"Noviembre 2026 — fechas a verificar", estado:"Fecha tentativa",
+    url:"https://apsa2026.com.ar/info2026.php", urlLabel:"apsa2026.com.ar",
+    impacto:"Alta", zona:"Playa Grande",
+    notas:"Históricamente uno de los congresos de mayor convocatoria de la ciudad. Confirmar fechas y edición en el sitio oficial. Si se realiza en noviembre, se solaparía con el Festival de Cine y los Maxi Games: presión máxima sobre la plaza."
+  },
+  {
+    cat:"Congreso",
+    nombre:"XII Congreso Mundial de Biodanza",
+    artista:"International Biodanza Federation",
+    sede:"NH Gran Hotel Provincial", sedeKey:null,
+    fecha:"26 – 29 nov 2026", estado:"Confirmado",
+    url:"https://eldiariodeviaje.ar/index.php/es/eventos/item/4929-turismo-eventos-mice-mar-del-plata-2026", urlLabel:"eldiariodeviaje.ar",
+    impacto:"Media", zona:"Centro",
+    notas:"Asistentes internacionales con estadías largas y llegada anticipada. Coincide con el arranque de los Maxi Games: cuidar la disponibilidad de fin de noviembre. Paquete estadía + gastronomía saludable."
+  },
+  {
+    cat:"Congreso",
+    nombre:"Temporada alta de congresos y convenciones (ventana)",
+    artista:"Múltiples entidades — agenda coordinada por el MDQ Convention Bureau",
+    sede:"Costa Galana · Sheraton · Hotel Provincial · NH Gran Hotel Provincial", sedeKey:"costa-galana",
+    fecha:"Oct – mediados de dic 2026", estado:"En curso",
+    url:"https://www.lacapitalmdp.com/mar-del-plata-reafirma-su-liderazgo-como-sede-de-congresos-con-una-agenda-a-pleno/", urlLabel:"lacapitalmdp.com",
+    impacto:"Alta", zona:"Playa Grande",
+    notas:"Ventana estructural de demanda profesional previa a la temporada de verano. Mantener tarifa corporativa firme y disponibilidad de salón para reuniones satélite. Revisar el calendario del Bureau cada semana para detectar nuevos congresos."
+  },
+
+  /* ================= RECITAL / SHOW ================= */
+  {
+    cat:"Recital / Show",
+    nombre:"Inauguración Arena Mar del Plata",
+    artista:"Los Fabulosos Cadillacs",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"24 oct 2026", estado:"Confirmado",
+    url:"https://www.infobrisas.com/noticias/2026/07/28/102615-los-fabulosos-cadillacs-inauguraran-el-arena-mardel-plata-en-octubre", urlLabel:"infobrisas.com",
+    impacto:"Muy Alta", zona:"Centro", pinned:true,
+    notas:"Entradas agotadas. Show inaugural con fuerte convocatoria regional y de CABA. Tarifa máxima puntual, mínimo 2 noches, prepago no reembolsable. Cerrar OTAs y priorizar venta directa. Confirmar habilitación del venue antes de garantizar bloques."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Ke Personajes (formato teatro)",
+    artista:"Ke Personajes",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"29 oct 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Alta", zona:"Centro",
+    notas:"Público joven, alto poder de convocatoria, reserva de última hora. Tarifa dinámica al alza desde 30 días antes; promover consumo en bar hasta tarde. Jueves: evaluar extensión de fin de semana."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Babasónicos",
+    artista:"Babasónicos",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"31 oct 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Alta", zona:"Centro",
+    notas:"Sábado + fin de semana largo de octubre: doble driver de demanda. Mínimo 2 noches con recargo de finde. Público 30–50 años con buena capacidad de gasto: promover cena previa en el restaurante."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Diego Torres (formato teatro)",
+    artista:"Diego Torres",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"4 nov 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Alta", zona:"Centro",
+    notas:"Coincide con la apertura del Festival de Cine (5/11). Semana de alta ocupación en el Centro. Sostener tarifa y monitorear pickup diario."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Alex Ubago (formato teatro)",
+    artista:"Alex Ubago",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"8 nov 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Media", zona:"Centro",
+    notas:"Artista internacional con público adulto. Impacto medio salvo que se sume a la demanda del Festival de Cine ese mismo fin de semana. Paquete pareja + late check-out."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Sergio Dalma (formato teatro)",
+    artista:"Sergio Dalma",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"10 nov 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Media", zona:"Centro",
+    notas:"Martes en plena semana del Festival de Cine. Demanda de 1 noche de público adulto de la región. Tarifa media-alta sin mínimo de noches."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Vilma Palma e Vampiros — «Modo Fiesta 80 & 90»",
+    artista:"Vilma Palma e Vampiros",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"5 dic 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Media", zona:"Centro",
+    notas:"Sábado de diciembre, previa a la temporada. Público nostálgico de la región. Mínimo 2 noches; promover como escapada de fin de semana con desayuno tardío."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Cruzando el Charco",
+    artista:"Cruzando el Charco",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"6 dic 2026", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/del-rock-al-pop-la-agenda-de-shows-que-prepara-el-arena-mardel-plata/", urlLabel:"lacapitalmdp.com",
+    impacto:"Media", zona:"Centro",
+    notas:"Domingo, cierra el fin de semana del show de Vilma Palma. Extiende la estadía del huésped del sábado: ofrecer segunda noche con descuento moderado."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"«7 Auras» — espectáculo de temporada",
+    artista:"Flavio Mendoza",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"Temporada verano 2026–27 — fecha a confirmar", estado:"Fecha tentativa",
+    url:"https://www.lacapitalmdp.com/anunciaron-shows-de-ke-personajes-babasonicos-diego-torres-sergio-dalma-y-mas-artistas-internacionales/", urlLabel:"lacapitalmdp.com",
+    impacto:"Media", zona:"Centro",
+    notas:"Espectáculo con múltiples funciones a lo largo del verano: demanda sostenida, no un pico. Armar paquete «noche + función» con agencias. Confirmar calendario de funciones cuando se publique."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"No Te Va Gustar",
+    artista:"No Te Va Gustar",
+    sede:"Arena MDQ — Av. Luro y San Juan", sedeKey:"arena-mdq",
+    fecha:"3 abr 2027", estado:"Confirmado",
+    url:"https://www.lacapitalmdp.com/anunciaron-shows-de-ke-personajes-babasonicos-diego-torres-sergio-dalma-y-mas-artistas-internacionales/", urlLabel:"lacapitalmdp.com",
+    impacto:"Alta", zona:"Centro",
+    notas:"Fuera de la ventana pico pero de alta convocatoria: útil para sostener ocupación en temporada baja de otoño. Fin de semana largo potencial: verificar calendario y anticipar tarifa."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"Temporada de shows de verano — Bendu Arena",
+    artista:"Grilla 2026–27 en confirmación. Temporada inaugural: Dante Spinetta, El Mató a un Policía Motorizado, Ciro y los Persas, Divididos, El Plan de la Mariposa, La K'onga + La Delio Valdéz, Karina",
+    sede:"Espacio Bendu (Bendu Arena) — Puerto", sedeKey:"bendu",
+    fecha:"Enero – febrero 2027 — grilla y fechas a confirmar", estado:"En seguimiento",
+    url:"https://www.lacapitalmdp.com/ya-se-conocieron-los-recitales-del-verano-en-bendu-arena/", urlLabel:"lacapitalmdp.com",
+    impacto:"Alta", zona:"Zona Sur", pinned:false,
+    notas:"Venue de ~7.000–8.000 pax que en su temporada inaugural concentró los picos de demanda de enero. Monitorear Ticketek semanalmente: cada anuncio de fecha implica un pico de 1–2 noches. Preparar reglas de tarifa dinámica y mínimo de noches para activarlas apenas se confirme cada show."
+  },
+  {
+    cat:"Recital / Show",
+    nombre:"41° Festival Internacional de Cine de Mar del Plata",
+    artista:"INCAA — único festival categoría A (FIAPF) de América Latina",
+    sede:"Centro — Auditorium, Ambassador, Paseo Aldrey", sedeKey:null,
+    fecha:"5 – 15 nov 2026", estado:"Confirmado",
+    url:"https://www.incaa.gob.ar/inscripciones-abiertas-para-el-41festival-internacional-de-cine-de-mar-del-plata/", urlLabel:"incaa.gob.ar",
+    impacto:"Alta", zona:"Centro",
+    notas:"11 días de ocupación sostenida en el Centro: prensa, industria, invitados y público. Se solapa con varios shows del Arena. Tarifa firme toda la quincena; paquete cultural con traslados. Prospecto de huéspedes de estadía larga."
+  },
+
+  /* ================= TORNEO / EVENTO DEPORTIVO ================= */
+  {
+    cat:"Torneo / Evento Deportivo",
+    nombre:"International Maxi Games Mar del Plata 2026",
+    artista:"International Maxi Games (deporte master +30) — ~15.000 a 20.000 atletas de 60+ países, 40 disciplinas",
+    sede:"Múltiples sedes — incluye Mar del Plata Golf Club y Club Náutico (golf y vela)", sedeKey:"nautico",
+    fecha:"24 nov – 4 dic 2026", estado:"Confirmado",
+    url:"https://www.internationalmaxigames.com/news/the-international-maxi-games-mar-del-plata-2026-officially-launched", urlLabel:"internationalmaxigames.com",
+    impacto:"Muy Alta", zona:"Playa Grande", pinned:true,
+    notas:"PRIORIDAD MÁXIMA. Evento de escala olímpica que ocupará la plaza casi por completo durante 11 días, con disciplinas de golf y vela a metros del hotel. Cerrar tarifa de temporada alta anticipada, mínimo 4–7 noches, condiciones de grupo para delegaciones. Contactar a la organización para inscribirse como hotel oficial y captar comitivas de golf/vela. Bloquear ya el inventario de esas fechas."
+  },
+  {
+    cat:"Torneo / Evento Deportivo",
+    nombre:"62ª Semana Internacional del Yachting",
+    artista:"Club Náutico Mar del Plata + Yacht Club Argentino — clases ILCA, Optimist, 420, 29er",
+    sede:"Club Náutico Mar del Plata", sedeKey:"nautico",
+    fecha:"Enero – marzo 2027 — fecha a confirmar (evento anual)", estado:"Fecha tentativa",
+    url:"https://cnmp.org.ar/mar-del-plata-se-prepara-la-61-semana-internacional-del-yachting/", urlLabel:"cnmp.org.ar",
+    impacto:"Alta", zona:"Playa Grande",
+    notas:"El evento náutico multiclase más importante del Cono Sur, a metros del hotel. Cientos de competidores nacionales y extranjeros con familias y estadías de 4–7 noches. Bloque de habitaciones con guardado de equipo náutico y desayuno extendido. Pedir al Náutico la lista de flotas inscriptas para venta directa."
+  },
+  {
+    cat:"Torneo / Evento Deportivo",
+    nombre:"Copa CNMP / Campeonato Interclubes de vela 2026",
+    artista:"Club Náutico Mar del Plata",
+    sede:"Club Náutico Mar del Plata", sedeKey:"nautico",
+    fecha:"Calendario anual — en curso", estado:"En curso",
+    url:"https://cnmp.org.ar/la-regata-aniversario-abrio-la-copa-cnmp-y-el-campeonato-interclubes-2026/", urlLabel:"cnmp.org.ar",
+    impacto:"Media", zona:"Playa Grande",
+    notas:"Regatas de fin de semana durante toda la temporada. Demanda regional recurrente de 1–2 noches. Público del club como target del bar y el restaurante. Revisar el calendario del CNMP para anticipar los fines de semana con regata grande."
+  },
+  {
+    cat:"Torneo / Evento Deportivo",
+    nombre:"Campeonato Abierto del Sur y Copa La Prensa (golf)",
+    artista:"Asociación Argentina de Golf — 72 hoyos, amateurs caballeros",
+    sede:"Mar del Plata Golf Club (lindero al hotel)", sedeKey:null,
+    fecha:"Enero 2027 — ventana estimada (edición 2026: 22–25 ene)", estado:"Fecha tentativa",
+    url:"https://www.aag.org.ar/", urlLabel:"aag.org.ar",
+    impacto:"Alta", zona:"Playa Grande",
+    notas:"Torneo nacional en la cancha contigua al hotel: máxima prioridad comercial cuando se confirme la fecha 2027. Bloquear inventario para jugadores, caddies, técnicos y prensa. Tarifa premium, mínimo 3 noches, paquete «green fee + traslado + late check-out». Verificar fecha en el fixture AAG."
+  },
+  {
+    cat:"Torneo / Evento Deportivo",
+    nombre:"Fútbol de Verano — Estadio José María Minella",
+    artista:"Concesión Minella Stadium S.A. — se había mencionado un superclásico Boca–River",
+    sede:"Estadio José María Minella (Parque Camet)", sedeKey:null,
+    fecha:"Verano 2026–27: NO confirmado — objetivo de regreso en 2027", estado:"En duda",
+    url:"https://www.iprofesional.com/negocios/437699-el-estadio-emblema-de-mar-del-plata-en-manos-brasilenas-volveria-el-futbol-del-verano", urlLabel:"iprofesional.com",
+    impacto:"Muy Alta", zona:"Otras", pinned:true,
+    notas:"NO se disputará esta temporada: estadio en obras (~US$3M) hasta el último trimestre de 2026. Históricamente llenaba la plaza en enero. Proyectar enero 2027 SIN este driver: ajustar ocupación y ADR a la baja salvo compensación de Bendu/Arena. Mantener seguimiento semanal por si se anuncia un partido aislado."
+  },
+
+  /* ================= REUNIÓN / CORPORATIVO ================= */
+  {
+    cat:"Reunión / Corporativo",
+    nombre:"Ventana de convenciones corporativas y viajes de incentivo",
+    artista:"Empresas y agencias MICE — turismo de reuniones",
+    sede:"Costa Galana · Sheraton (salones)", sedeKey:"costa-galana",
+    fecha:"Oct – dic 2026", estado:"En curso",
+    url:"https://mi8.com.ar/mar-del-plata-consolida-su-liderazgo-en-el-turismo-de-reuniones-y-proyecta-un-2026-con-agenda-internacional/", urlLabel:"mi8.com.ar",
+    impacto:"Media", zona:"Playa Grande",
+    notas:"Primavera concentra convenciones de ventas y kick-off de empresas antes del receso de verano. Ofrecer bloques para comitivas directivas con estacionamiento, factura A y salida tardía. Prospecto de cliente recurrente: relevar organizadores de eventos de Costa Galana y Sheraton."
+  },
+
+  /* ================= FERIA ================= */
+  {
+    cat:"Feria",
+    nombre:"Expo Automotriz Mar del Plata 2026",
+    artista:"Autos, motos, movilidad eléctrica, shows y gastronomía — entrada libre",
+    sede:"Base Naval Mar del Plata", sedeKey:null,
+    fecha:"Temporada verano 2026–27 — fecha a confirmar", estado:"Fecha tentativa",
+    url:"https://mardelmakers.com.ar/auto-expo-mar-del-plata-2026/", urlLabel:"mardelmakers.com.ar",
+    impacto:"Media", zona:"Zona Sur",
+    notas:"Feria masiva de entrada libre que atrae público regional de fin de semana. Impacto medio e indirecto sobre el hotel; útil para huéspedes ya alojados y para contenido de marketing. Confirmar fecha exacta antes de asumir presión de demanda."
+  }
+];
+
+/* ---- normalización y metadata ---- */
+const CAT_CLASS = {
+  "Congreso":"c-congreso",
+  "Recital / Show":"c-recital",
+  "Torneo / Evento Deportivo":"c-torneo",
+  "Reunión / Corporativo":"c-reunion",
+  "Feria":"c-feria"
+};
+const EST_CLASS = {
+  "Confirmado":"est-conf",
+  "En curso":"est-curso",
+  "Fecha tentativa":"est-tent",
+  "En seguimiento":"est-seg",
+  "En duda":"est-duda"
+};
+const SEDE_LABEL = {
+  "costa-galana":"Hotel Costa Galana",
+  "nautico":"Club Náutico MDP",
+  "bendu":"Espacio Bendu",
+  "arena-mdq":"Arena MDQ"
+};
+const ZONAS = [
+  {id:"Playa Grande", desc:"Contiguo al hotel — máxima prioridad comercial"},
+  {id:"Zona Sur", desc:"Puerto y corredor sur — impacto alto sobre la plaza"},
+  {id:"Centro", desc:"Microcentro, rambla y Av. Luro — demanda indirecta"},
+  {id:"Otras", desc:"Parque Camet / periferia — efecto arrastre"}
+];
+const IMP_RANK = {"Muy Alta":4,"Alta":3,"Media":2,"Baja":1};
+const impClass = i => "imp-"+i.toLowerCase().replace(/\s+/g,"");
+const KEY_SEDES = new Set(["costa-galana","nautico","bendu","arena-mdq"]);
+
+/* ---- verificación / fechas ---- */
+const FECHA_BASE = "2026-08-27";              // fecha de compilación original de todos los datos
+const LS_KEY = "mdq_verif_v1";
+const pad = n => String(n).padStart(2,"0");
+function todayISO(){ const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function fmtAR(iso){ if(!iso) return "—"; const p=iso.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; }
+function daysSince(iso){ const p=iso.split("-").map(Number); const then=new Date(p[0],p[1]-1,p[2]); const now=new Date(); now.setHours(0,0,0,0); return Math.max(0, Math.round((now-then)/86400000)); }
+function ageClass(d){ return d<=7 ? "age-fresh" : d<=21 ? "age-mid" : "age-old"; }
+function ageLabel(d){ return d===0 ? "hoy" : d===1 ? "hace 1 día" : "hace "+d+" días"; }
+function anioDe(e){ const m = String(e.fecha).match(/20\d{2}/); return m ? m[0] : "2026"; }
+function slug(s){
+  return s.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"").slice(0,64);
+}
+function loadVerif(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } }
+function saveVerif(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
+let VERIF = loadVerif();
+
+EVENTOS.forEach(e=>{ e.id = slug(e.nombre + "--" + e.fecha); });
+function verifOf(e){ return VERIF[e.id] || FECHA_BASE; }
+
+function gnews(q){ return "https://news.google.com/search?q="+encodeURIComponent(q+" when:45d")+"&hl=es-419&gl=AR&ceid=AR:es"; }
+function gweb(q){ return "https://www.google.com/search?q="+encodeURIComponent(q)+"&tbs=qdr:m"; }
+const AGENDAS = [
+  ["Agenda EMTUR / Municipio","https://turismomardelplata.gob.ar/ASP/SP/eventos-amarlaweb.asp"],
+  ["MDQ Convention Bureau","https://www.mardelplatabureau.com.ar/calendario-acceso"],
+  ["Cartelera de recitales","https://www.mardelplataturismo.com.ar/recitales.html"],
+  ["Club Náutico MDP","https://cnmp.org.ar/"],
+  ["Asociación Argentina de Golf","https://www.aag.org.ar/"],
+  ["International Maxi Games","https://www.internationalmaxigames.com/"]
+];
+const NEWS_QUERIES = [
+  "Mar del Plata Arena recitales shows",
+  "Bendu Arena Mar del Plata shows",
+  "Mar del Plata congreso convención hotel",
+  "Club Náutico Mar del Plata regata yachting",
+  "Mar del Plata Golf Club torneo abierto",
+  "International Maxi Games Mar del Plata",
+  "Estadio Minella Mar del Plata fútbol de verano"
+];
+
+const state = {cat:"all", zona:"all", estado:"all", sede:false, alto:false, stale:false};
+
+function cardHTML(e){
+  const sedeClave = KEY_SEDES.has(e.sedeKey);
+  const v = verifOf(e);
+  const age = daysSince(v);
+  const markedToday = VERIF[e.id] && age === 0;
+  return `
+  <article class="card ${sedeClave?'sede-clave':''} ${e.pinned?'pinned':''}" data-cat="${e.cat}">
+    <div class="card-top">
+      <span class="cat ${CAT_CLASS[e.cat]}">${e.cat}</span>
+      <span class="badge ${impClass(e.impacto)}">${e.impacto}</span>
+      <span class="est ${EST_CLASS[e.estado]}">${e.estado}</span>
+      ${sedeClave?`<span class="sede-tag">★ ${SEDE_LABEL[e.sedeKey]}</span>`:''}
+      <span class="prox-pill">${e.zona}</span>
+    </div>
+    <h3>${e.nombre}</h3>
+    <div class="artista">${e.artista}</div>
+    <div class="rows">
+      <div class="row"><span class="k">Sede</span><span class="v">${e.sede}</span></div>
+      <div class="row"><span class="k">Fecha</span><span class="v">${e.fecha}</span></div>
+      <div class="row"><span class="k">Impacto</span><span class="v">${e.impacto} · atracción turística e impacto en ocupación de la plaza</span></div>
+      <div class="row"><span class="k">Cercanía</span><span class="v">${e.zona} respecto al Hotel Club del Golf</span></div>
+      <div class="row"><span class="k">Fuente</span><span class="v"><a class="src" href="${e.url}" target="_blank" rel="noopener">🔗 ${e.urlLabel} ↗</a></span></div>
+    </div>
+    <div class="notes"><b>Notas operativas — Reservations Manager</b>${e.notas}</div>
+    <div class="verif">
+      <span class="vlabel">Últ. verificación</span>
+      <span class="vdate">${fmtAR(v)}</span>
+      <span class="age ${ageClass(age)}">${ageLabel(age)}</span>
+      <span class="grow"></span>
+      <a class="mini" href="${gweb(e.nombre + ' Mar del Plata ' + anioDe(e))}" target="_blank" rel="noopener">🔍 Buscar novedades</a>
+      <button class="mini v-btn ${markedToday ? 'done' : ''}" data-id="${e.id}">✓ Verificado hoy</button>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  let visibles = 0;
+
+  ZONAS.forEach(z=>{
+    let lista = EVENTOS.filter(e=>e.zona===z.id)
+      .filter(e=> state.cat==="all"    || e.cat===state.cat)
+      .filter(e=> state.zona==="all"   || e.zona===state.zona)
+      .filter(e=> state.estado==="all" || e.estado===state.estado)
+      .filter(e=> !state.sede || KEY_SEDES.has(e.sedeKey))
+      .filter(e=> !state.alto || IMP_RANK[e.impacto]>=3)
+      .filter(e=> !state.stale || daysSince(verifOf(e))>21)
+      .sort((a,b)=> (b.pinned?1:0)-(a.pinned?1:0) || IMP_RANK[b.impacto]-IMP_RANK[a.impacto]);
+
+    if(!lista.length) return;
+    visibles += lista.length;
+
+    const sec = document.createElement("section");
+    sec.className = "zona";
+    sec.innerHTML = `
+      <div class="zona-head">
+        <h2>${z.id}</h2><span class="desc">${z.desc}</span>
+        <span class="count">${lista.length} evento${lista.length>1?'s':''}</span>
+      </div>
+      <div class="grid">${lista.map(cardHTML).join("")}</div>`;
+    board.appendChild(sec);
+  });
+
+  if(!visibles) board.innerHTML = '<p class="empty" style="display:block">No hay eventos que coincidan con los filtros seleccionados.</p>';
+}
+
+function kpis(){
+  document.getElementById("k-total").textContent = EVENTOS.length;
+  document.getElementById("k-conf").textContent  = EVENTOS.filter(e=>e.estado==="Confirmado").length;
+  document.getElementById("k-alto").textContent  = EVENTOS.filter(e=>IMP_RANK[e.impacto]>=3).length;
+  document.getElementById("k-sede").textContent  = EVENTOS.filter(e=>KEY_SEDES.has(e.sedeKey)).length;
+}
+
+function wire(groupId, key, exclusive=true){
+  const group = document.getElementById(groupId);
+  group.addEventListener("click", ev=>{
+    const chip = ev.target.closest(".chip");
+    if(!chip) return;
+    if(exclusive){
+      group.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      state[key] = chip.dataset.f;
+    }else{
+      chip.classList.toggle("active");
+      state[chip.dataset.f] = chip.classList.contains("active");
+    }
+    render();
+  });
+}
+
+wire("f-cat","cat");
+wire("f-zona","zona");
+wire("f-estado","estado");
+wire("f-flag",null,false);
+
+/* ---- barra de actualización + verificación ---- */
+function buildPanelLinks(){
+  const box = document.getElementById("upd-links");
+  const parts = [];
+  AGENDAS.forEach(a => parts.push('<a href="'+a[1]+'" target="_blank" rel="noopener">🏛 '+a[0]+'</a>'));
+  NEWS_QUERIES.forEach(q => parts.push('<a href="'+gnews(q)+'" target="_blank" rel="noopener">📰 '+q+'</a>'));
+  box.innerHTML = parts.join("");
+}
+
+function refreshChrome(){
+  const t = todayISO();
+  document.getElementById("today-str").textContent = fmtAR(t);
+  document.getElementById("panel-date").textContent = fmtAR(t);
+
+  const marks = Object.values(VERIF).sort();
+  document.getElementById("last-mark").textContent = marks.length ? fmtAR(marks[marks.length-1]) : "sin marcas (datos base)";
+
+  const vencidos = EVENTOS.filter(e => daysSince(verifOf(e)) > 21).length;
+  const inner = document.getElementById("stale-inner");
+  if(vencidos > 0){
+    inner.className = "inner warn";
+    inner.textContent = "⚠ " + vencidos + " tarjeta" + (vencidos>1?"s":"") + " sin verificar hace más de 21 días — clic para filtrarlas";
+  }else{
+    inner.className = "inner none";
+    inner.textContent = "✓ Todas las tarjetas fueron verificadas en los últimos 21 días.";
+  }
+}
+
+document.getElementById("btn-upd").addEventListener("click", ()=>{
+  document.getElementById("upd-panel").classList.toggle("open");
+  window.open(gnews("Mar del Plata eventos espectáculos congresos deportes"), "_blank", "noopener");
+});
+document.getElementById("btn-all").addEventListener("click", ()=>{
+  if(!confirm("¿Marcar los " + EVENTOS.length + " eventos como verificados hoy (" + fmtAR(todayISO()) + ")?")) return;
+  const t = todayISO();
+  VERIF = {};
+  EVENTOS.forEach(e => VERIF[e.id] = t);
+  saveVerif(VERIF); render(); refreshChrome();
+});
+document.getElementById("btn-reset").addEventListener("click", ()=>{
+  if(!confirm("¿Borrar todas las marcas de verificación y volver a la fecha base (27/08/2026)?")) return;
+  VERIF = {}; saveVerif(VERIF); render(); refreshChrome();
+});
+document.getElementById("board").addEventListener("click", ev=>{
+  const b = ev.target.closest(".v-btn");
+  if(!b) return;
+  VERIF[b.dataset.id] = todayISO();
+  saveVerif(VERIF); render(); refreshChrome();
+});
+document.getElementById("stale-inner").addEventListener("click", ()=>{
+  const inner = document.getElementById("stale-inner");
+  if(!inner.classList.contains("warn")) return;
+  const chip = document.querySelector('#f-flag .chip[data-f="stale"]');
+  if(!chip.classList.contains("active")){ chip.classList.add("active"); state.stale = true; render(); }
+  document.getElementById("board").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+buildPanelLinks();
+kpis();
+render();
+refreshChrome();
+</script>
+
+</body>
+</html>
