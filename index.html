@@ -197,7 +197,7 @@
     <h1>Tablero de Inteligencia de Eventos — Plaza Mar del Plata</h1>
     <p class="sub">Compilación, verificación y jerarquización de eventos de los próximos meses para decisiones de tarifas, paquetes y ocupación. Cada tarjeta incluye artista/entidad protagonista, sede exacta, estado y enlace fuente para auditoría del equipo de Reservas.</p>
     <div class="meta-line">
-      <span>Datos compilados: <b>27/08/2026</b></span>
+      <span>Datos compilados: <b>31/08/2026</b></span>
       <span>Ventana: <b>Ago 2026 – Abr 2027</b></span>
       <span>Frecuencia: <b>Revisión y reauditoría semanal</b></span>
       <span>Responsable: <b>Inteligencia Comercial / Reservations Manager</b></span>
@@ -207,13 +207,13 @@
 
 <div class="disclaimer">
   <div class="box">
-    <b>Nota de auditoría.</b> Los datos provienen de fuentes públicas (prensa local, sitios de sedes, ticketeras y agendas institucionales) relevadas el 27/08/2026. Las fechas marcadas como <b>tentativas</b>, <b>en seguimiento</b> o <b>en duda</b> deben confirmarse contra el enlace fuente de cada tarjeta antes de fijar tarifas o cupos. Los eventos anuales recurrentes (Semana del Yachting, Abierto de Golf) figuran con la ventana estimada según su edición previa.
+    <b>Nota de auditoría.</b> Los datos provienen de fuentes públicas (prensa local, sitios de sedes, ticketeras y agendas institucionales) relevadas el 31/08/2026. Las fechas marcadas como <b>tentativas</b>, <b>en seguimiento</b> o <b>en duda</b> deben confirmarse contra el enlace fuente de cada tarjeta antes de fijar tarifas o cupos. Los eventos anuales recurrentes (Semana del Yachting, Abierto de Golf) figuran con la ventana estimada según su edición previa.
   </div>
 </div>
 
 <div class="updbar">
   <div class="inner">
-    <span class="today">Fecha de consulta: <b id="today-str">—</b> · datos base compilados el <b>27/08/2026</b> · última marca manual: <b id="last-mark">—</b></span>
+    <span class="today">Fecha de consulta: <b id="today-str">—</b> · datos base compilados el <b>31/08/2026</b> · última marca manual: <b id="last-mark">—</b></span>
     <span class="spacer"></span>
     <button class="btn" id="btn-upd">🔄 Actualizar búsqueda a hoy</button>
     <button class="btn ghost" id="btn-all">✓ Marcar todo verificado hoy</button>
@@ -349,7 +349,7 @@
       <li>International Maxi Games 2026 — <a href="https://www.internationalmaxigames.com/" target="_blank" rel="noopener">internationalmaxigames.com</a></li>
     </ul>
     <p><b>Naturaleza de los datos.</b> Tablero de apoyo a la decisión. No sustituye la confirmación directa con organizadores y sedes. Ante discrepancia entre este tablero y la fuente enlazada, prevalece la fuente.</p>
-    <p><b>Control de vigencia.</b> Cada tarjeta muestra su fecha de <b>última verificación</b> (base: 27/08/2026). El botón «🔄 Actualizar búsqueda a hoy» abre las agendas oficiales y las búsquedas de prensa acotadas a los últimos 45 días; tras revisar, usá «✓ Verificado hoy» en cada tarjeta para dejar registro. Las marcas se guardan solo en este navegador. Una tarjeta sin verificar por más de 21 días queda señalada en la barra de alerta.</p>
+    <p><b>Control de vigencia.</b> Cada tarjeta muestra su fecha de <b>última verificación</b> (base: 31/08/2026). El botón «🔄 Actualizar búsqueda a hoy» abre las agendas oficiales y las búsquedas de prensa acotadas a los últimos 45 días; tras revisar, usá «✓ Verificado hoy» en cada tarjeta para dejar registro. Las marcas se guardan solo en este navegador. Una tarjeta sin verificar por más de 21 días queda señalada en la barra de alerta.</p>
   </div>
 </footer>
 
@@ -361,10 +361,10 @@ const EVENTOS = [
     nombre:"Congreso Catastral del Bicentenario",
     artista:"Consejo Federal del Catastro + Colegio de Agrimensores de la Prov. de Buenos Aires",
     sede:"Hotel Costa Galana", sedeKey:"costa-galana",
-    fecha:"31 ago – 2 sep 2026", estado:"Confirmado",
+    fecha:"31 ago – 2 sep 2026", estado:"En curso",
     url:"https://congresosada.com/informacion_general/", urlLabel:"congresosada.com",
     impacto:"Alta", zona:"Playa Grande",
-    notas:"Sede a metros del hotel, con récord de inscripciones. Captar overflow cuando Costa Galana complete cupo. Tarifa corporativa con factura A, check-in temprano y sala para reuniones. Solicitar figurar como hotel alternativo oficial ante la secretaría del congreso."
+    notas:"Arrancó hoy en Costa Galana, con récord de inscripciones. Captar overflow mientras Costa Galana está a cupo completo. Tarifa corporativa con factura A, check-in temprano y sala para reuniones. Confirmar con la secretaría del congreso si aún hay delegados sin alojamiento asignado."
   },
   {
     cat:"Congreso",
@@ -668,7 +668,7 @@ const impClass = i => "imp-"+i.toLowerCase().replace(/\s+/g,"");
 const KEY_SEDES = new Set(["costa-galana","nautico","bendu","arena-mdq"]);
 
 /* ---- verificación / fechas ---- */
-const FECHA_BASE = "2026-08-27";              // fecha de compilación original de todos los datos
+const FECHA_BASE = "2026-08-31";              // fecha de compilación original de todos los datos
 const LS_KEY = "mdq_verif_v1";
 const pad = n => String(n).padStart(2,"0");
 function todayISO(){ const d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
