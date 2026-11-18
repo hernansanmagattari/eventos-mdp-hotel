@@ -102,8 +102,17 @@ Agendas oficiales a consultar:
 2. **`const FECHA_BASE = "AAAA-MM-DD";`** — poner la fecha de ejecución de hoy (ISO).
 3. En el `<header>`, el texto `Datos compilados: <b>DD/MM/AAAA</b>` — fecha de hoy.
 4. En `.disclaimer`, la frase `relevadas el DD/MM/AAAA` — fecha de hoy.
-5. El bloque `.callout` del Fútbol de Verano — actualizar el texto si cambió el estado de
-   las obras / la concesión / la definición de temporada.
+5. El bloque `.callout` del Fútbol de Verano — actualizar si cambió el estado de las obras /
+   la concesión / la definición de temporada. **Mantenerlo CORTO**; no seguir agregando
+   texto semana tras semana. Estructura fija:
+   - Dos párrafos visibles de **máx. ~450 caracteres cada uno**: (1) estado actual en
+     negrita + 1-2 frases; (2) `Implicancia comercial` + `Último relevamiento: DD/MM/AAAA`.
+   - Todo lo demás va dentro del `<details>` ya existente (`Ver detalle, fuentes e
+     historial`): contexto, **historial de relevamientos** y fuentes.
+   - El historial **no se acumula**: una línea por hito. Las semanas "sin novedades" se
+     agrupan en una sola línea (ej. `19/10, 02/11 y 09/11: sin novedades`). Conservar solo
+     los últimos ~6 hitos; borrar los más viejos.
+   - **Reemplazar** el estado en vez de añadir una `Actualización` nueva encima.
 6. Las 4 tarjetas de `.sedes` (Monitoreo de sedes clave) — refrescar el texto de estado de
    cada sede si hubo novedades.
 
